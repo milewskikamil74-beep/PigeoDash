@@ -1,0 +1,74 @@
+app-id: pl.GolabProjects.PigeoDash
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+command: pigeodash
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=x11
+  - --device=dri
+  - --talk-name=org.freedesktop.portal.Desktop
+
+modules:
+  - name: tkinter
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=${FLATPAK_DEST} --no-build-isolation .
+    sources:
+      - type: git
+        url: https://github.com/iwalton3/tkinter-standalone
+        commit: 8e78e38ef0cceb44a3a0062e1c314a4ff3f981db
+    modules:
+      - name: tcl
+        buildsystem: autotools
+        subdir: unix
+        config-opts:
+          - --disable-zipfs
+        post-install:
+          - chmod 755 /app/lib/libtcl*.so
+        cleanup:
+          - /bin
+          - /lib/pkgconfig
+          - /man
+        sources:
+          - type: archive
+            url: https://prdownloads.sourceforge.net/tcl/tcl9.0.3-src.tar.gz
+            sha256: 2537ba0c86112c8c953f7c09d33f134dd45c0fb3a71f2d7f7691fd301d2c33a6
+
+      - name: tk
+        buildsystem: autotools
+        subdir: unix
+        config-opts:
+          - --disable-zipfs
+        post-install:
+          - chmod 755 /app/lib/libtcl*tk*.so
+        cleanup:
+          - /bin
+          - /lib/pkgconfig
+          - /man
+        sources:
+          - type: archive
+            url: https://prdownloads.sourceforge.net/tcl/tk9.0.3-src.tar.gz
+            sha256: bf344efadb618babb7933f69275620f72454d1c8220130da93e3f7feb0efbf9b
+
+  - python3-customtkinter.json
+
+  - name: pigodash
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 PigoDash.py /app/bin/PigoDash.py
+      - install -Dm755 pigeodash /app/bin/pigeodash
+      - install -Dm644 pl.GolabProjects.PigeoDash.desktop /app/share/applications/pl.GolabProjects.PigeoDash.desktop
+      - install -Dm644 pl.GolabProjects.PigeoDash.png /app/share/icons/hicolor/512x512/apps/pl.GolabProjects.PigeoDash.png
+    sources:
+      - type: file
+        path: PigoDash.py
+      - type: file
+        path: pigeodash
+      - type: file
+        path: pl.GolabProjects.PigeoDash.desktop
+      - type: file
+        path: pl.GolabProjects.PigeoDash.png
