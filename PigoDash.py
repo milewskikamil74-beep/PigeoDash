@@ -149,7 +149,7 @@ def wwg():
     Zatwierdź=CTkButton(master=Gołąb,text="Zatwierdź",corner_radius=500, fg_color="#588157",
                   bg_color="#656d4a",hover_color="#3a5a40",border_color="#a3b18a" ,
                   border_width=3, command=Google, width=500 ,height=100,font=("Serif", 65),
-               text_color="#dad7cd")
+                  text_color="#dad7cd")
     Zatwierdź.pack()
     def Powrót():
             Zatwierdź.pack_forget()
